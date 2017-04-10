@@ -2,18 +2,22 @@ function use(block) {
   var catchable = {
     catch(catcher) {
       catcher.call(this, error);
+      this.error = null;
       return this;
     },
     
     finally(finisher) {
       finisher.call(this);
+      if (this.error) {
+        throw this.error;
+      }
     }
   };
 
 	try {
     block();
   } catch (error){
-  	this.error = error;
+  	catchable.error = error;
     return catchable;
   }
 }
